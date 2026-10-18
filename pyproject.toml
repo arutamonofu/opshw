@@ -1,0 +1,17 @@
+[project]
+name = "opshw"
+version = "0.1.0"
+description = "Homework"
+readme = "README.md"
+authors = [
+    { name = "Aleksandr Artamonov", email = "artamonov@pish.itmo.ru" }
+]
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+opshw = "opshw:main"
+
+[build-system]
+requires = ["uv_build>=0.13.1,<0.14.0"]
+build-backend = "uv_build"
