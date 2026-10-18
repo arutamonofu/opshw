@@ -35,8 +35,8 @@ class LinearRegression:
 
         self.theta = A_inv @ b
 
-    def predict(self, X) -> np.ndarray:
-        X_extended = np.column_stack((np.ones(X.shape[0])), X)
+    def predict(self, X: np.ndarray) -> np.ndarray:
+        X_extended = np.column_stack((np.ones(X.shape[0])), X) # type: ignore
         return X_extended @ self.theta
 
 
