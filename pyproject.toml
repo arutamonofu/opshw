@@ -7,7 +7,9 @@ authors = [
     { name = "Aleksandr Artamonov", email = "artamonov@pish.itmo.ru" }
 ]
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "numpy>=2.5.4",
+]
 
 [project.scripts]
 opshw = "opshw:main"
