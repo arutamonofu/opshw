@@ -41,7 +41,7 @@ class LinearRegression:
 
 
 model = LinearRegression()
-model.fit_numerically(X, y, 0.01, 100)
+model.fit_numerically(X, y, 0.01, 50)
 print("Параметры, вычисленные численным методом:", model.theta)
 
 model.fit_analytically(X, y)
