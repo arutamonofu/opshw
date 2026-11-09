@@ -27,3 +27,6 @@ mlruns/
 mlartifacts/
 *.db
 mlflow.db
+
+# Profiler & Debug Artifacts
+artifacts/
