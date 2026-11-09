@@ -1,13 +1,16 @@
 import numpy as np
 
-from opshw import LinearRegression
+from opshw import train_model
 
-X = np.array([[1], [3]])
-y = np.array([2, 4])
+X = np.array([[1.0], [3.0]])
+y = np.array([2.0, 4.0])
 
-model = LinearRegression()
-model.fit_numerically(X, y, 0.01, 50)
-print("Параметры, вычисленные численным методом:", model.theta)
+model_num, run_id_num = train_model(
+    X, y, learning_rate=0.01, learning_iterations=50, method="numerical"
+)
+print("Параметры, вычисленные численным методом:", model_num.theta)
+print(f"MLflow Run ID: {run_id_num}")
 
-model.fit_analytically(X, y)
-print("Параметры, вычисленные аналитическим методом:", model.theta)
+model_ana, run_id_ana = train_model(X, y, method="analytical")
+print("Параметры, вычисленные аналитическим методом:", model_ana.theta)
+print(f"MLflow Run ID: {run_id_ana}")
