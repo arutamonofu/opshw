@@ -1,9 +1,12 @@
+import argparse
 import os
 from collections.abc import Callable
 from contextlib import AbstractContextManager
 
 import torch
 from torch import nn
+
+from opshw.torch_model import DeepMLP
 
 
 def compute_gradient_norms(model: nn.Module) -> dict[str, float]:
@@ -78,3 +81,87 @@ def debug_breakpoint(hint: str = "") -> None:
             "PDB commands: 'n' (next), 's' (step), 'p <var>' (print), 'c' (continue), 'q' (quit)\n"
         )
     breakpoint()  # noqa: T100
+
+
+def run_debugging_demo() -> None:
+    """Демонстрирует инструменты отладки: нормы градиентов, anomaly detection, gradcheck и pdb."""
+    print("=" * 60)
+    print("1. Анализ норм градиентов: Затухание в Sigmoid vs ReLU")
+    print("=" * 60)
+
+    torch.manual_seed(42)
+    x = torch.randn(32, 1)
+    target = torch.randn(32, 1)
+    criterion = nn.MSELoss()
+
+    # Модель с Sigmoid (демонстрация затухания градиента)
+    sigmoid_model = DeepMLP(
+        input_dim=1, hidden_dim=32, num_layers=5, activation="sigmoid"
+    )
+    out_sig = sigmoid_model(x)
+    loss_sig = criterion(out_sig, target)
+    loss_sig.backward()
+    sig_norms = compute_gradient_norms(sigmoid_model)
+
+    print("Нормы градиентов для Sigmoid сети (затухание к первым слоям):")
+    for name, norm in sig_norms.items():
+        if "weight" in name:
+            print(f"  {name:30s} -> norm: {norm:.6e}")
+
+    # Модель с ReLU (сохранение величины градиентов)
+    relu_model = DeepMLP(
+        input_dim=1, hidden_dim=32, num_layers=5, activation="relu"
+    )
+    out_relu = relu_model(x)
+    loss_relu = criterion(out_relu, target)
+    loss_relu.backward()
+    relu_norms = compute_gradient_norms(relu_model)
+
+    print("\nНормы градиентов для ReLU сети:")
+    for name, norm in relu_norms.items():
+        if "weight" in name:
+            print(f"  {name:30s} -> norm: {norm:.6e}")
+
+    print("\n" + "=" * 60)
+    print("2. Проверка аномалий градиентов (Gradient Anomaly Detection)")
+    print("=" * 60)
+    with gradient_anomaly_context():
+        test_in = torch.randn(8, 1, requires_grad=True)
+        test_out = torch.sin(test_in).sum()
+        test_out.backward()
+        print("Anomaly detection context: Градиенты вычислены корректно.")
+
+    print("\n" + "=" * 60)
+    print("3. Верификация градиентов через torch.autograd.gradcheck")
+    print("=" * 60)
+    # Для gradcheck требуются double (float64) тензоры
+    input_double = (torch.randn(4, 2, dtype=torch.float64, requires_grad=True),)
+
+    def custom_func(t: torch.Tensor) -> torch.Tensor:
+        return torch.pow(t, 3) + 2.0 * t
+
+    gradcheck_passed = run_gradcheck(custom_func, input_double)
+    print(f"Gradcheck успешно пройден: {gradcheck_passed}")
+
+    print("\n" + "=" * 60)
+    print("4. Python Debugger (PDB) и PYTHONBREAKPOINT=0")
+    print("=" * 60)
+    print("Проверка вызова debug_breakpoint с PYTHONBREAKPOINT=0...")
+    os.environ["PYTHONBREAKPOINT"] = "0"
+    debug_breakpoint("Проверка пропуска брейкпоинта в автоматическом режиме")
+    print(
+        "Точка останова успешно пропущена благодаря PYTHONBREAKPOINT=0 (CI/CD режим)."
+    )
+    print("=" * 60)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="PyTorch debugging and gradient analysis demo."
+    )
+    parser.parse_args()
+    run_debugging_demo()
+
+
+if __name__ == "__main__":
+    main()
