@@ -1,0 +1,81 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: uv run python -m opshw.stages.prepare --config params.yaml
+    deps:
+    - path: src/opshw/stages/prepare.py
+      hash: md5
+      md5: a3bca83f4cd7b28c3c941b353a55a239
+      size: 1879
+    params:
+      params.yaml:
+        prepare:
+          n_samples: 100
+          noise: 0.1
+          seed: 42
+          test_size: 0.2
+    outs:
+    - path: data/prepared/test.csv
+      hash: md5
+      md5: e4bb28b674a7969d349bee58cbe0e145
+      size: 1019
+    - path: data/prepared/train.csv
+      hash: md5
+      md5: 7072da573ef45e15b1bab9293c3eb4be
+      size: 4074
+  train:
+    cmd: uv run python -m opshw.stages.train --config params.yaml
+    deps:
+    - path: data/prepared/train.csv
+      hash: md5
+      md5: 7072da573ef45e15b1bab9293c3eb4be
+      size: 4074
+    - path: src/opshw/models.py
+      hash: md5
+      md5: aa23835b0164b80467f778aace388f58
+      size: 1572
+    - path: src/opshw/stages/train.py
+      hash: md5
+      md5: 5f9b6c4dae15a4ee9e54b60b2d10cd39
+      size: 3317
+    - path: src/opshw/train.py
+      hash: md5
+      md5: a5ae24f9754da07dd0bc3856a7c1baea
+      size: 7274
+    params:
+      params.yaml:
+        train:
+          learning_rate: 0.001
+          iterations: 100
+          method: numerical
+          experiment_name: linear_regression
+          run_name: dvc_repro_run
+    outs:
+    - path: models/model.json
+      hash: md5
+      md5: 7f4f055d93490a4e667bf12376d57d92
+      size: 456
+  evaluate:
+    cmd: uv run python -m opshw.stages.evaluate --config params.yaml
+    deps:
+    - path: data/prepared/test.csv
+      hash: md5
+      md5: e4bb28b674a7969d349bee58cbe0e145
+      size: 1019
+    - path: models/model.json
+      hash: md5
+      md5: 7f4f055d93490a4e667bf12376d57d92
+      size: 456
+    - path: src/opshw/stages/evaluate.py
+      hash: md5
+      md5: f6f588babca7740a1dae028cd9ddab48
+      size: 2755
+    params:
+      params.yaml:
+        evaluate:
+          metrics_file: metrics.json
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: cb8e78beb28c9bb8b902b5231fea1375
+      size: 104

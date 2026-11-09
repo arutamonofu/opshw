@@ -16,7 +16,7 @@ def prepare_data(config_path: str = "params.yaml") -> None:
     test_size = float(prep_params.get("test_size", 0.2))
 
     rng = np.random.default_rng(seed)
-    X = rng.uniform(-5.0, 5.0, size=(n_samples, 1))
+    X = rng.uniform(-1.0, 1.0, size=(n_samples, 1))
     true_slope = 2.5
     true_bias = 1.0
     y = true_slope * X.ravel() + true_bias + rng.normal(0, noise, size=n_samples)

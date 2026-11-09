@@ -1,0 +1,34 @@
+stages:
+  prepare:
+    cmd: uv run python -m opshw.stages.prepare --config params.yaml
+    deps:
+      - src/opshw/stages/prepare.py
+    params:
+      - prepare
+    outs:
+      - data/prepared/train.csv
+      - data/prepared/test.csv
+
+  train:
+    cmd: uv run python -m opshw.stages.train --config params.yaml
+    deps:
+      - data/prepared/train.csv
+      - src/opshw/models.py
+      - src/opshw/stages/train.py
+      - src/opshw/train.py
+    params:
+      - train
+    outs:
+      - models/model.json
+
+  evaluate:
+    cmd: uv run python -m opshw.stages.evaluate --config params.yaml
+    deps:
+      - data/prepared/test.csv
+      - models/model.json
+      - src/opshw/stages/evaluate.py
+    params:
+      - evaluate
+    metrics:
+      - metrics.json:
+          cache: false
