@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.14"
 dependencies = [
     "dvc>=3.67.1",
+    "mlflow>=3.18.0",
     "numpy>=2.5.4",
     "ruff>=0.17.1",
     "ty>=0.0.89",
