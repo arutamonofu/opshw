@@ -1,4 +1,7 @@
 [core]
-    remote = local-storage
+    remote = minio
 ['remote "local-storage"']
     url = ../../opshw-storage
+['remote "minio"']
+    url = s3://dvc-storage
+    endpointurl = http://localhost:9000
