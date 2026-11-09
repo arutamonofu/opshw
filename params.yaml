@@ -1,0 +1,15 @@
+prepare:
+  n_samples: 200
+  noise: 0.1
+  seed: 42
+  test_size: 0.2
+
+train:
+  learning_rate: 0.01
+  iterations: 100
+  method: numerical
+  experiment_name: linear_regression
+  run_name: dvc_repro_run
+
+evaluate:
+  metrics_file: metrics.json
