@@ -16,3 +16,9 @@ wheels/
 
 # IDE
 .vscode
+
+# MLflow
+mlruns/
+mlartifacts/
+*.db
+mlflow.db
