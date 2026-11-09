@@ -109,9 +109,7 @@ def run_debugging_demo() -> None:
             print(f"  {name:30s} -> norm: {norm:.6e}")
 
     # Модель с ReLU (сохранение величины градиентов)
-    relu_model = DeepMLP(
-        input_dim=1, hidden_dim=32, num_layers=5, activation="relu"
-    )
+    relu_model = DeepMLP(input_dim=1, hidden_dim=32, num_layers=5, activation="relu")
     out_relu = relu_model(x)
     loss_relu = criterion(out_relu, target)
     loss_relu.backward()
