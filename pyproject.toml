@@ -14,12 +14,14 @@ dependencies = [
     "mlflow>=3.18.0",
     "numpy>=2.5.4",
     "ruff>=0.17.1",
+    "torch>=2.2.0",
     "ty>=0.0.89",
 ]
 
 [project.scripts]
 opshw = "opshw:main"
 opshw-train = "opshw.train:main"
+opshw-debug = "opshw.debugging:main"
 
 [build-system]
 requires = ["uv_build>=0.13.1,<0.14.0"]
