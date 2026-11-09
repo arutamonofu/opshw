@@ -9,6 +9,7 @@ from opshw.debugging import (
 )
 from opshw.metrics import mse
 from opshw.models import LinearRegression
+from opshw.profiler import ProfilerConfig, run_debug_profiler
 from opshw.torch_model import DeepMLP
 from opshw.train import train_model
 
@@ -20,6 +21,7 @@ def main() -> None:
 __all__ = [
     "DeepMLP",
     "LinearRegression",
+    "ProfilerConfig",
     "check_parameters_and_gradients",
     "check_tensor_finite",
     "compute_gradient_norms",
@@ -29,6 +31,7 @@ __all__ = [
     "load_and_preprocess",
     "main",
     "mse",
+    "run_debug_profiler",
     "run_gradcheck",
     "train_model",
 ]
